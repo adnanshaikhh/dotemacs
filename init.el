@@ -21,11 +21,20 @@
 
 ;;/////////////////////////////Appearance/////////////////////////////
 
-(use-package atom-one-dark-theme
+(use-package zenburn-theme
   :ensure t
   :defer t
-  :init (load-theme 'atom-one-dark t)
+  :init (load-theme 'zenburn t)
   )
+
+;(use-package atom-one-dark-theme
+;  :ensure t
+;  :defer t
+;  :init (load-theme 'atom-one-dark t)
+;  )
+
+;;Set Window Title
+(setq frame-title-format "emacs")
 
 ;; No Menu Bar
 (menu-bar-mode -1)
@@ -34,12 +43,32 @@
  (when (functionp 'tool-bar-mode)
    (tool-bar-mode -1))
 
+;;Highlight current line
+(if (boundp 'global-hl-line-sticky-flag) ;introduced in emacs 24.1
+    (setq global-hl-line-sticky-flag t))
+(global-hl-line-mode 1)
+
+;;Point to last place where you previously where on the file
+
+;;Emacs 24.5 and older versions
+(require 'saveplace)
+(setq-default save-place t)
+
+;;Emacs 25.1 and newer versions
+;(use-package saveplace
+;  :init (save-place-mode))
+
 ;; Powerline config //git clone git://github.com/jonathanchu/emacs-powerline.git
 (add-to-list 'load-path "~/.emacs.d/vendor/emacs-powerline")
 (require 'powerline)
 
 ;; Set Powerline colors
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ ;'(linum ((t (:foreground "white" :background "#353B45" :box nil))))
  '(mode-line ((t (:foreground "#030303" :background "#AFEC1F" :box nil))))
  '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
 
@@ -109,19 +138,6 @@
 ;; Packages
 ;;------------------------------------------------------------------------------
 
-;; Enable company mode
-(use-package company
-  :ensure t
-  :bind ("C-;" . company-complete-common)
-  :defer 1
-  :init (global-company-mode))
-
-;; Documentation popups
-(use-package company-quickhelp
-  :ensure t
-  :defer 1
-  :init (company-quickhelp-mode 1))
-
 ;; Helm
 (use-package helm
   :ensure t
@@ -149,27 +165,8 @@
       (lambda (line) (propertize
 		      (format (let ((w (length (number-to-string (count-lines (point-min) (point-max))))))
 				(concat " %" (number-to-string w) "d ")) line) 'face 'linum)))
-(custom-set-faces '(linum ((t (:foreground "white" :background "#353B45" :box nil)))) )
+
 (set-face-attribute 'linum nil :height 125)
-
-;; Live Syntax Checking 
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
-
-;(use-package flycheck
-;  :ensure t
-;  :commands global-flycheck-mode
-;  :init (global-flycheck-mode)
-;  :config (progn
-;            (setq flycheck-check-syntax-automatically '(save mode-enabled))
-;            (setq flycheck-standard-error-navigation nil)
-;            ;; flycheck errors on a tooltip (doesnt work on console)
-;            (when (display-graphic-p (selected-frame))
-;              (eval-after-load 'flycheck
-;                '(custom-set-variables
-;                  '(flycheck-display-errors-function #'flycheck-pos-tip-error-messages)))
-;              )))
 
 ;;------------------------------------------------------------------------------
 ;; Key Bindings and Defuns
