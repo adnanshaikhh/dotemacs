@@ -21,11 +21,17 @@
 
 ;;/////////////////////////////Appearance/////////////////////////////
 
-(use-package zenburn-theme
+(use-package gruvbox-theme
   :ensure t
   :defer t
-  :init (load-theme 'zenburn t)
+  :init (load-theme 'gruvbox t)
   )
+
+;(use-package zenburn-theme
+;  :ensure t
+;  :defer t
+;  :init (load-theme 'zenburn t)
+;  )
 
 ;(use-package atom-one-dark-theme
 ;  :ensure t
@@ -48,6 +54,9 @@
     (setq global-hl-line-sticky-flag t))
 (global-hl-line-mode 1)
 
+(set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+(set-face-attribute 'font-lock-comment-face nil :weight 'semibold)
+
 ;;Point to last place where you previously where on the file
 
 ;;Emacs 24.5 and older versions
@@ -58,7 +67,7 @@
 ;(use-package saveplace
 ;  :init (save-place-mode))
 
-;; Powerline config //git clone git://github.com/jonathanchu/emacs-powerline.git
+ ;; Powerline config //git clone git://github.com/jonathanchu/emacs-powerline.git
 (add-to-list 'load-path "~/.emacs.d/vendor/emacs-powerline")
 (require 'powerline)
 
@@ -73,7 +82,10 @@
  '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
 
 ;; Set Cursor to a bar
- (setq-default cursor-type 'bar)
+(setq-default cursor-type 'bar)
+
+(require 'whitespace)
+(setq-default show-trailing-whitespace t)
 
 ;;------------------------------------------------------------------------------
 ;; Global Config
@@ -100,7 +112,7 @@
 
 ;; Instantly display current key sequence in mini buffer
 (setq echo-keystrokes 0.02)
-	
+
 ;; Scroll one line at a time (less "jumpy" than defaults)
 (setq mouse-wheel-scroll-amount '(2 ((shift) . 2))) ;One line at a time
 (setq mouse-wheel-progressive-speed nil) ;Don't accelerate scrolling
@@ -151,23 +163,35 @@
 ;; Replace default isearch
 (use-package helm-swoop
   :ensure t
-  :bind (("C-c C-SPC" . helm-swoop)
+  :bind (("C-c C-SPC" . helm-swoop-without-pre-input)
          ("C-c o" . helm-multi-swoop-all)
-         ("C-s"   . helm-swoop)
+         ("C-s"   . helm-swoop-without-pre-input)
          ("C-r"   . helm-resume)))
 
-;; Show pretty line numbers
 (require 'linum)
+(set-face-attribute 'linum nil
+                    :background (face-attribute 'default :background)
+                    :foreground (face-attribute 'font-lock-comment-face :foreground)
+		    :height 125)
+(defface linum-current-line-face
+  `((t :background "gray30" :foreground "gold" :height 125))
+  "Face for the currently active Line number")
+(defvar my-linum-current-line-number 0)
+(setq my-linum-format-string " %d ")
+(defun my-linum-format (line-number)
+  (propertize (format my-linum-format-string line-number) 'face
+              (if (eq line-number my-linum-current-line-number)
+                  'linum-current-line-face
+                'linum)))
+(setq linum-format 'my-linum-format)
+(defadvice linum-update (around my-linum-update)
+  (let ((my-linum-current-line-number (line-number-at-pos)))
+    ad-do-it))
+(ad-activate 'linum-update)
+
 (global-linum-mode 1)
 
-;; Make pretty line numbers 10x prettier
-(setq linum-format
-      (lambda (line) (propertize
-		      (format (let ((w (length (number-to-string (count-lines (point-min) (point-max))))))
-				(concat " %" (number-to-string w) "d ")) line) 'face 'linum)))
-
-(set-face-attribute 'linum nil :height 125)
-
+;(set-face-attribute 'linum nil :height 125)
 ;;------------------------------------------------------------------------------
 ;; Key Bindings and Defuns
 ;;------------------------------------------------------------------------------
@@ -280,3 +304,6 @@ point reaches the beginning or end of the buffer, stop there."
   (next-line arg))
 
 (global-set-key (kbd "C-c d") 'duplicate-line)
+
+
+
