@@ -77,7 +77,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- ;'(linum ((t (:foreground "white" :background "#353B45" :box nil))))
  '(mode-line ((t (:foreground "#030303" :background "#AFEC1F" :box nil))))
  '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
 
@@ -142,6 +141,22 @@
 
 ;; Highlight matching parentheses when the point is on them.
 (show-paren-mode 1)
+
+;;Remove Delay
+(setq show-paren-delay 0.01)
+
+;;Show offscreen parenthesis in minibuffer
+(defadvice show-paren-function
+    (after show-matching-paren-offscreen activate)
+  "If the matching paren is offscreen, show the matching line in the
+        echo area. Has no effect if the character before point is not of
+        the syntax class ')'."
+  (interactive)
+  (let* ((cb (char-before (point)))
+	 (matching-text (and cb
+			     (char-equal (char-syntax cb) ?\) )
+			     (blink-matching-open))))
+    (when matching-text (message matching-text))))
 
 ;; Auto scroll compilation buffer.
 (setq compilation-scroll-output 't)
@@ -307,3 +322,9 @@ point reaches the beginning or end of the buffer, stop there."
 
 
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages (quote (helm-swoop helm gruvbox-theme use-package))))
