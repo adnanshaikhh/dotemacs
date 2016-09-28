@@ -107,7 +107,7 @@
   `((".*" "~/.emacs.d/emacs-autosaves/" t)))
 
 ;; Keep cursor at same position when scrolling
-(setq scroll-preserve-screen-position t)
+;(setq scroll-preserve-screen-position t)
 
 ;; Instantly display current key sequence in mini buffer
 (setq echo-keystrokes 0.02)
@@ -192,7 +192,7 @@
   `((t :background "gray30" :foreground "gold" :height 125))
   "Face for the currently active Line number")
 (defvar my-linum-current-line-number 0)
-(setq my-linum-format-string " %d ")
+(setq my-linum-format-string " %2d |")
 (defun my-linum-format (line-number)
   (propertize (format my-linum-format-string line-number) 'face
               (if (eq line-number my-linum-current-line-number)
@@ -319,8 +319,6 @@ point reaches the beginning or end of the buffer, stop there."
   (next-line arg))
 
 (global-set-key (kbd "C-c d") 'duplicate-line)
-
-
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
