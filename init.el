@@ -39,11 +39,21 @@
 ;  :init (load-theme 'atom-one-dark t)
 ;  )
 
+;; Set default font
+(set-face-attribute 'default nil
+                    :family "Source Code Pro"
+                    :height 90
+                    :weight 'normal
+                    :width 'normal)
+
 ;;Set Window Title
 (setq frame-title-format "emacs")
 
 ;; No Menu Bar
 (menu-bar-mode -1)
+
+;; No Scroll Bar
+(toggle-scroll-bar -1)
 
 ;; No toolbar
  (when (functionp 'tool-bar-mode)
@@ -71,6 +81,7 @@
 (add-to-list 'load-path "~/.emacs.d/vendor/emacs-powerline")
 (require 'powerline)
 
+
 ;; Set Powerline colors
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -83,8 +94,8 @@
 ;; Set Cursor to a bar
 (setq-default cursor-type 'bar)
 
-(require 'whitespace)
-(setq-default show-trailing-whitespace t)
+;(require 'whitespace)
+;(setq-default show-trailing-whitespace t)
 
 ;;------------------------------------------------------------------------------
 ;; Global Config
@@ -107,7 +118,7 @@
   `((".*" "~/.emacs.d/emacs-autosaves/" t)))
 
 ;; Keep cursor at same position when scrolling
-;(setq scroll-preserve-screen-position t)
+;(setq scroll-reserve-screen-position t)
 
 ;; Instantly display current key sequence in mini buffer
 (setq echo-keystrokes 0.02)
@@ -187,9 +198,9 @@
 (set-face-attribute 'linum nil
                     :background (face-attribute 'default :background)
                     :foreground (face-attribute 'font-lock-comment-face :foreground)
-		    :height 125)
+		    :height 100)
 (defface linum-current-line-face
-  `((t :background "gray30" :foreground "gold" :height 125))
+  `((t :background "gray30" :foreground "gold" :height 100))
   "Face for the currently active Line number")
 (defvar my-linum-current-line-number 0)
 (setq my-linum-format-string " %2d |")
@@ -206,7 +217,20 @@
 
 (global-linum-mode 1)
 
-;(set-face-attribute 'linum nil :height 125)
+ ;(set-face-attribute 'linum nil :height 125)
+
+ ;; highlight-sysmbol configurations
+(global-set-key [(control f3)] 'highlight-symbol-at-point)
+(global-set-key [f3] 'highlight-symbol-next)
+(global-set-key [(shift f3)] 'highlight-symbol-prev)
+(global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+(global-set-key [(control shift f3)] 'unhighlight-regexp)
+(global-set-key [(control shift mouse-1)]
+                (lambda (event)
+                  (interactive "e")
+                  (save-excursion
+                    (goto-char (posn-point (event-start event)))
+                    (highlight-symbol-at-point))))
 ;;------------------------------------------------------------------------------
 ;; Key Bindings and Defuns
 ;;------------------------------------------------------------------------------
